@@ -8,6 +8,33 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import login
 from django.urls import reverse_lazy
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
+
+# Helper function to check if the user has the required role
+def role_required(role):
+    def decorator(view_func):
+        return user_passes_test(
+            lambda user: user.userprofile.role == role, 
+            login_url='login'
+        )(view_func)
+    return decorator
+
+# Admin view
+@role_required('Admin')
+def admin_view(request):
+    return render(request, 'admin_view.html')
+
+# Librarian view
+@role_required('Librarian')
+def librarian_view(request):
+    return render(request, 'librarian_view.html')
+
+# Member view
+@role_required('Member')
+def member_view(request):
+    return render(request, 'member_view.html')
+
 
 # Registration view
 def register(request):
