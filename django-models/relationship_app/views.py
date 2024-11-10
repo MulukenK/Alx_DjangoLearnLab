@@ -6,6 +6,7 @@ from .models import Book
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth import login
 from django.urls import reverse_lazy
 
 # Registration view
