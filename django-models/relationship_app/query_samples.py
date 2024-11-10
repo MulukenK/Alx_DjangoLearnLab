@@ -15,6 +15,6 @@ for book in books_in_library:
     print(book.title)
 
 
-library = Library.objects.get(name=library_name)
+library = Library.objects.get(Library
 librarian_for_library = library.librarian  
 print(f"\nLibrarian for Central Library: {librarian_for_library.name}")
