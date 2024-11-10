@@ -21,19 +21,19 @@ def role_required(role):
     return decorator
 
 # Admin view
-@role_required('Admin')
+@user_passes_test('Admin')
 def admin_view(request):
-    return render(request, 'admin_view.html')
+    return render(request, 'relationship_app/admin_view.html')
 
 # Librarian view
-@role_required('Librarian')
+@user_passes_test('Librarian')
 def librarian_view(request):
-    return render(request, 'librarian_view.html')
+    return render(request, 'relationship_app/librarian_view.html')
 
 # Member view
-@role_required('Member')
+@user_passes_test('Member')
 def member_view(request):
-    return render(request, 'member_view.html')
+    return render(request, 'relationship_app/member_view.html')
 
 
 # Registration view
