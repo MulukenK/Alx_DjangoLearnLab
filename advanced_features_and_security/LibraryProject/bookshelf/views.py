@@ -7,6 +7,15 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import MetaModel
 from .models import Book
+from .forms import ExampleForm
+
+def book_search(request):
+    form = ExampleForm(request.GET)
+    if form.is_valid():
+        query = form.cleaned_data['q']
+        books = Book.objects.filter(title__icontains=query)
+        return render(request, 'bookshelf/book_list.html', {'books': books, 'form': form})
+    return render(request, 'bookshelf/book_list.html', {'form': form})
 
 @permission_required('yourapp.can_view', raise_exception=True)
 def book_list(request):

@@ -11,3 +11,22 @@
 
 ## Testing
 - Test users were created for each group to verify permissions enforcement.
+
+
+# Security Configuration Documentation
+
+## Security Settings
+- DEBUG=False: Disables detailed error messages in production for security.
+- SECURE_BROWSER_XSS_FILTER: Enables X-XSS-Protection header.
+- X_FRAME_OPTIONS='DENY': Prevents the site from being embedded in iframes.
+- SECURE_CONTENT_TYPE_NOSNIFF: Prevents the browser from guessing content types.
+- CSRF_COOKIE_SECURE and SESSION_COOKIE_SECURE: Ensures cookies are sent only over HTTPS.
+
+## CSRF Protection
+- Added {% csrf_token %} in all forms.
+
+## ORM Usage for SQL Injection Protection
+- Used Django ORM to prevent SQL injection, ensuring all queries are parameterized.
+
+## Content Security Policy (CSP)
+- Configured CSP header to restrict content sources, reducing XSS risks.

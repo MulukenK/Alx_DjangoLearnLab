@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-gx_u38@hl%!6^zsh$z_s4!3g+pc29+j3-b^1ghvqehcp&k)n8b'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -132,3 +132,17 @@ LOGIN_URL = 'login'
 
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
+SECURE_BROWSER_XSS_FILTER = True  # Enables the X-XSS-Protection header for XSS prevention
+X_FRAME_OPTIONS = 'DENY'  # Prevents your site from being embedded in iframes to prevent clickjacking
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents browsers from guessing the content type
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+
+MIDDLEWARE += ['csp.middleware.CSPMiddleware']
+
+CSP_DEFAULT_SRC = ("'self'",)  # Only allow resources from this domain
+CSP_STYLE_SRC = ("'self'", 'fonts.googleapis.com')  # Adjust as needed for stylesheets
+CSP_SCRIPT_SRC = ("'self'", 'trusted-scripts.com')  # Add trusted script domains
