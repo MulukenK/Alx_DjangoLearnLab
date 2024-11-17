@@ -10,7 +10,23 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+# models.py
+from django.db import models
 
+class MetaModel(models.Model):
+
+    name = models.CharField(max_length=100)
+
+    class Meta:
+        permissions = [
+            ("can_view", "Can view model instances"),
+            ("can_create", "Can create model instances"),
+            ("can_edit", "Can edit model instances"),
+            ("can_delete", "Can delete model instances"),
+        ]
+
+    def str(self):
+        return self.name
 
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
