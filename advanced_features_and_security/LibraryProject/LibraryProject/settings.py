@@ -146,3 +146,17 @@ MIDDLEWARE += ['csp.middleware.CSPMiddleware']
 CSP_DEFAULT_SRC = ("'self'",)  # Only allow resources from this domain
 CSP_STYLE_SRC = ("'self'", 'fonts.googleapis.com')  # Adjust as needed for stylesheets
 CSP_SCRIPT_SRC = ("'self'", 'trusted-scripts.com')  # Add trusted script domains
+
+SECURE_SSL_REDIRECT = True  # Redirects HTTP requests to HTTPS
+
+SECURE_HSTS_SECONDS = 31536000  # Enforces HTTPS for one year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Includes subdomains in the HSTS policy
+SECURE_HSTS_PRELOAD = True  # Enables HSTS preloading in supported browsers
+
+SESSION_COOKIE_SECURE = True  # Sends session cookies only over HTTPS
+CSRF_COOKIE_SECURE = True  # Sends CSRF cookies only over HTTPS
+
+
+X_FRAME_OPTIONS = 'DENY'  # Prevents embedding of your site in iframes
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents browsers from interpreting files as a different MIME type
+SECURE_BROWSER_XSS_FILTER = True  # Enables XSS filtering in supported browsers
