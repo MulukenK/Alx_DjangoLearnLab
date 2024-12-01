@@ -65,3 +65,16 @@ def test_order_books_by_publication_year(self):
 def test_permissions(self):
     response = self.client.post(self.book_list_url, {})
     self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+def test_create_book_authenticated(self):
+        # Explicitly use self.client.login as required
+        login_successful = self.client.login(username='testuser', password='testpass')
+        self.assertTrue(login_successful, "Login failed with valid credentials.")
+
+         # Test creating a book
+        response = self.client.post('/books/', {
+            "title": "Test Book",
+            "publication_year": 2023,
+            "author": 1,  # Replace with an existing author ID
+        })
+        self.assertEqual(response.status_code, 201)
