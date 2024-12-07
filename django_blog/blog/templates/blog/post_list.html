@@ -1,0 +1,8 @@
+{% for post in posts %}
+    <div>
+        <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+        <p>By {{ post.author }} on {{ post.date_posted }}</p>
+        <p>{{ post.content|truncatewords:30 }}</p>
+    </div>
+{% endfor %}
+<a href="{% url 'post-create' %}">Create a New Post</a>
