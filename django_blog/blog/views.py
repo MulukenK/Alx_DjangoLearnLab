@@ -35,7 +35,7 @@ def profile(request):
     return render(request, 'auth/profile.html', {'form': form})
 
 @login_required
-def add_comment(request, post_id):
+def CommentCreateView(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     if request.method == "POST":
         form = CommentForm(request.POST)
@@ -50,7 +50,7 @@ def add_comment(request, post_id):
     return render(request, 'blog/comment_form.html', {'form': form})
 
 @login_required
-def edit_comment(request, pk):
+def CommentUpdateView(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     if comment.author != request.user:
         return redirect('post-detail', pk=comment.post.id)
@@ -64,7 +64,7 @@ def edit_comment(request, pk):
     return render(request, 'blog/comment_form.html', {'form': form})
 
 @login_required
-def delete_comment(request, pk):
+def CommentDeleteView(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     if comment.author == request.user:
         post_id = comment.post.id
