@@ -123,8 +123,6 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return self.request.user == post.author
 
 
-
-
 def search_posts(request):
     query = request.GET.get('q', '')
     results = Post.objects.filter(
@@ -133,3 +131,8 @@ def search_posts(request):
         Q(tagsnameicontains=query)
             ).distinct()
     return render(request,'blog/search_results.html', {'query': query, 'results': results})
+
+
+def posts_by_tag(request, tag_name):
+    posts = Post.objects.filter(tags__name=tag_name)
+    return render(request, 'blog/posts_by_tag.html', {'tag_name': tag_name, 'posts': posts})
