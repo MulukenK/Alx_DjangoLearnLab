@@ -7,6 +7,9 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, Comment
+from django.db.models import Q
+from django.shortcuts import render
+from .models import Post
 
 
 # Registration view
@@ -121,3 +124,12 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
 
 
+
+def search_posts(request):
+    query = request.GET.get('q', '')
+    results = Post.objects.filter(
+        Q(titleicontains=query) | 
+        Q(contenticontains=query) | 
+        Q(tagsnameicontains=query)
+            ).distinct()
+    return render(request,'blog/search_results.html', {'query': query, 'results': results})
