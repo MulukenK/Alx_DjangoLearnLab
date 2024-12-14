@@ -72,3 +72,8 @@ class UnfollowUserView(generics.GenericAPIView):
         # Remove from the 'following' list
         request.user.following.remove(user_to_unfollow)
         return Response({"detail": f"You have unfollowed {user_to_unfollow.username}"}, status=status.HTTP_200_OK)
+    
+    class UserListView(generics.ListAPIView):
+        permission_classes = [IsAuthenticated]
+        queryset = User.objects.all()  # Now using get_user_model()
+        serializer_class = UserSerializer  # This should serialize the User object
