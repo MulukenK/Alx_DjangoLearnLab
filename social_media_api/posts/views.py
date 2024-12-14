@@ -90,7 +90,7 @@ class FeedView(generics.ListAPIView):
 
 @api_view(['POST'])
 def like_post(request, pk):
-    # Get the post using get_object_or_404
+    # Use generics.get_object_or_404 to retrieve the post
     post = get_object_or_404(Post, pk=pk)
 
     # Ensure the user has not already liked the post
@@ -111,7 +111,7 @@ def like_post(request, pk):
 
 @api_view(['POST'])
 def unlike_post(request, pk):
-    # Get the post using get_object_or_404
+    # Use generics.get_object_or_404 to retrieve the post
     post = get_object_or_404(Post, pk=pk)
 
     # Find the like object and delete it
