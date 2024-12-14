@@ -2,12 +2,13 @@ from django.shortcuts import render
 from rest_framework import viewsets, permissions
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
-from rest_framework import filters
+from rest_framework import filters, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .models import Post
+from django.contrib.auth import get_user_model
 
 # Post ViewSet with permissions to ensure users can only modify their own posts
 class PostViewSet(viewsets.ModelViewSet):
@@ -59,3 +60,22 @@ class FeedViewSet(viewsets.ReadOnlyModelViewSet):
         user = self.request.user
         followed_users = user.following.all()
         return Post.objects.filter(author__in=followed_users).order_by('-created_at')
+    
+
+
+
+User = get_user_model()
+
+class FeedView(generics.ListAPIView):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostSerializer
+
+    def get_queryset(self):
+        # Get the current authenticated user
+        user = self.request.user
+
+        # Get all users that the current user follows
+        following_users = user.following.all()
+
+        # Return posts from followed users, ordered by creation date
+        return Post.objects.filter(author__in=following_users).order_by('-created_at')
