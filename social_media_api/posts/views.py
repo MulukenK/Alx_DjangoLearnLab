@@ -79,3 +79,43 @@ class FeedView(generics.ListAPIView):
 
         # Return posts from followed users, ordered by creation date
         return Post.objects.filter(author__in=following_users).order_by('-created_at')
+    
+
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from .models import Post, Like
+from notifications.models import Notification
+
+@api_view(['POST'])
+def like_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if Like.objects.filter(user=request.user, post=post).exists():
+        return Response({"detail": "You already liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Create a like
+    Like.objects.create(user=request.user, post=post)
+
+    # Create a notification
+    Notification.objects.create(
+        recipient=post.author,
+        actor=request.user,
+        verb="liked your post",
+        target=post
+    )
+
+    return Response({"detail": "Post liked successfully."}, status=status.HTTP_201_CREATED)
+
+@api_view(['POST'])
+def unlike_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    like = Like.objects.filter(user=request.user, post=post).first()
+    if not like:
+        return Response({"detail": "You have not liked this post."}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Delete the like
+    like.delete()
+
+    return Response({"detail": "Post unliked successfully."}, status=status.HTTP_204_NO_CONTENT)
