@@ -9,3 +9,11 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+class User(AbstractUser):
+    # Adding 'following' to track users that a user follows
+    following = models.ManyToManyField('self', related_name='followers', symmetrical=False, blank=True)
+
+    def __str__(self):
+        return self.username

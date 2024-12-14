@@ -3,6 +3,11 @@ from rest_framework import viewsets, permissions
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework import filters
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.response import Response
+from rest_framework.decorators import action
+from .models import Post
 
 # Post ViewSet with permissions to ensure users can only modify their own posts
 class PostViewSet(viewsets.ModelViewSet):
@@ -39,3 +44,18 @@ class PostViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filter_backends = [filters.SearchFilter]
     search_fields = ['title', 'content']
+
+
+class PostFeedPagination(PageNumberPagination):
+    page_size = 10  # Adjust the page size as needed
+
+class FeedViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostSerializer
+    pagination_class = PostFeedPagination
+
+    def get_queryset(self):
+        # Return posts from the users the current user is following
+        user = self.request.user
+        followed_users = user.following.all()
+        return Post.objects.filter(author__in=followed_users).order_by('-created_at')
