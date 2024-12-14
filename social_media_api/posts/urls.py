@@ -9,6 +9,7 @@ router.register(r'feed', FeedViewSet, basename='feed')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('feed/', FeedView.as_view(), name='feed'),
 ]
 
 
