@@ -75,5 +75,5 @@ class UnfollowUserView(generics.GenericAPIView):
     
     class UserListView(generics.ListAPIView):
         permission_classes = [IsAuthenticated]
-        queryset = User.objects.all()  # Now using get_user_model()
-        serializer_class = UserSerializer  # This should serialize the User object
+        queryset = CustomUser.objects.all()  # Use CustomUser directly to list all users
+        serializer_class = UserSerializer
