@@ -7,7 +7,7 @@ from django.contrib.auth.password_validation import validate_password
 User = get_user_model()
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    # Fields for password and password confirmation
+    # Use CharField for password and confirm password fields
     password = serializers.CharField(
         write_only=True,
         required=True,
@@ -26,22 +26,22 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'email', 'password', 'password2', 'bio', 'profile_picture']
 
     def validate(self, attrs):
-        """Validate that the two passwords match."""
+        """Ensure the passwords match"""
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({"password": "Passwords do not match."})
         return attrs
 
     def create(self, validated_data):
-        """Create a new user instance."""
-        validated_data.pop('password2', None)  # Remove password2 from the data
+        """Create the user and return the user instance"""
+        validated_data.pop('password2', None)  # Remove password2, it's not part of the user model
         password = validated_data.pop('password')  # Extract password
 
-        # Create user using Django's user creation method
+        # Create a user using the custom user model's create_user method
         user = get_user_model().objects.create_user(**validated_data)
         user.set_password(password)  # Set the password
         user.save()
 
-        # Create an auth token for the user
+        # Create a token for the user
         Token.objects.create(user=user)
 
         return user
