@@ -7,46 +7,41 @@ from django.contrib.auth.password_validation import validate_password
 User = get_user_model()
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
-    password2 = serializers.CharField(write_only=True, required=True, label="Confirm Password")
-    
+    # Fields for password and password confirmation
+    password = serializers.CharField(
+        write_only=True,
+        required=True,
+        validators=[validate_password],
+        help_text="Enter a strong password"
+    )
+    password2 = serializers.CharField(
+        write_only=True,
+        required=True,
+        label="Confirm Password",
+        help_text="Re-enter the password for confirmation"
+    )
+
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password', 'password2', 'bio', 'profile_picture']
-    
+
     def validate(self, attrs):
-        # Ensure password and password2 match
+        """Validate that the two passwords match."""
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError({"password": "Passwords do not match."})
         return attrs
-    
+
     def create(self, validated_data):
-        # Remove password2 as it's not part of the user model
-        validated_data.pop('password2', None)
-        password = validated_data.pop('password')
-        
-        # Create the user
-        user = User.objects.create_user(**validated_data)
-        user.set_password(password)
+        """Create a new user instance."""
+        validated_data.pop('password2', None)  # Remove password2 from the data
+        password = validated_data.pop('password')  # Extract password
+
+        # Create user using Django's user creation method
+        user = get_user_model().objects.create_user(**validated_data)
+        user.set_password(password)  # Set the password
         user.save()
-        
-        # Create an auth token for the new user
+
+        # Create an auth token for the user
         Token.objects.create(user=user)
-        
+
         return user
-
-
-class UserLoginSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
-    password = serializers.CharField(write_only=True, required=True)
-    
-    def validate(self, attrs):
-        username = attrs.get('username')
-        password = attrs.get('password')
-        user = authenticate(username=username, password=password)
-        
-        if not user:
-            raise serializers.ValidationError({"detail": "Invalid credentials."})
-        
-        attrs['user'] = user
-        return attrs
